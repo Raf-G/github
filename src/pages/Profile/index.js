@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Form,
   Button,
@@ -7,10 +8,19 @@ import {
   FormControl,
   FormText,
 } from "react-bootstrap";
+import { changeApiKey, changeLogin } from "../../redux/actions/profileActions";
 
 export const Profile = () => {
-  const [login, setLogin] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const { login, apiKey } = useSelector((state) => state.profileReducer);
+  const dispatch = useDispatch();
+
+  const setLogin = (value) => {
+    dispatch(changeLogin(value));
+  };
+
+  const setApiKey = (value) => {
+    dispatch(changeApiKey(value));
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -43,7 +53,7 @@ export const Profile = () => {
           </FormText>
         </FormGroup>
         <Button variant="primary" type="submit">
-          Отправить
+          Сохранить
         </Button>
       </Form>
     </div>
