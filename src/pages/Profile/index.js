@@ -14,13 +14,9 @@ export const Profile = () => {
   const { login, apiKey } = useSelector((state) => state.profileReducer);
   const dispatch = useDispatch();
 
-  const setLogin = (value) => {
-    dispatch(changeLogin(value));
-  };
+  const setLogin = (value) => dispatch(changeLogin(value));
 
-  const setApiKey = (value) => {
-    dispatch(changeApiKey(value));
-  };
+  const setApiKey = (value) => dispatch(changeApiKey(value));
 
   const handleSubmit = (event) => {
     event.preventDefault();
