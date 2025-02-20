@@ -100,13 +100,13 @@ export const Repositories = () => {
 
   return (
     <Container>
-      <h1>Список Репозиториев</h1>
+      <h1>Список репозиториев</h1>
       <Button
         variant="primary"
         className="mt-2 mb-3"
         onClick={handleCreateShow}
       >
-        Создать Репозиторий
+        Создать репозиторий
       </Button>
       {loading && <p>Загрузка...</p>}
       <Row>
