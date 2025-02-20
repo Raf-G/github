@@ -8,7 +8,12 @@ import {
   FormControl,
   FormText,
 } from "react-bootstrap";
-import { changeApiKey, changeLogin } from "../../redux/actions/profileActions";
+import {
+  changeApiKey,
+  changeLogin,
+  saveUser,
+} from "../../redux/actions/profileActions";
+import { TooltipApiKey } from "./components/TooltipApiKey";
 
 export const Profile = () => {
   const { login, apiKey } = useSelector((state) => state.profileReducer);
@@ -20,12 +25,12 @@ export const Profile = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(login, apiKey);
+    saveUser(login, apiKey);
   };
 
   return (
     <div>
-      <h2 className="mb-3 text-center">Профиль</h2>
+      <h2 className="text-center">Профиль</h2>
       <Form onSubmit={handleSubmit}>
         <FormGroup className="mb-3" controlId="formLogin">
           <FormLabel>Логин</FormLabel>
@@ -37,7 +42,10 @@ export const Profile = () => {
           />
         </FormGroup>
         <FormGroup className="mb-3" controlId="formApiKey">
-          <FormLabel>GitHub API Key</FormLabel>
+          <FormLabel>
+            GitHub API Key
+            <TooltipApiKey />
+          </FormLabel>
           <FormControl
             type="password"
             placeholder="Введите GitHub API Key"
