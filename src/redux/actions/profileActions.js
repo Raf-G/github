@@ -50,11 +50,27 @@ export const saveUser = async (login, apiKey, dispatch) => {
         return;
       }
 
+      localStorage.setItem("login", login);
+      localStorage.setItem("apiKey", apiKey);
+
       toast.success("Данный сохранены");
       dispatch(changeAuthorized(true));
     } catch (err) {
       toast.error(`Произошла ошибка при авторизации`);
       dispatch(changeAuthorized(false));
     }
+  }
+};
+
+export const checkInfo = (dispatch) => {
+  const login = localStorage.getItem("login");
+  const apiKey = localStorage.getItem("apiKey");
+
+  if (login) {
+    dispatch(changeLogin(login));
+  }
+
+  if (apiKey) {
+    dispatch(changeApiKey(apiKey));
   }
 };

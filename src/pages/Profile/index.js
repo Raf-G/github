@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Form,
@@ -11,6 +11,7 @@ import {
 import {
   changeApiKey,
   changeLogin,
+  checkInfo,
   saveUser,
 } from "../../redux/actions/profileActions";
 import { TooltipApiKey } from "./components/TooltipApiKey";
@@ -28,6 +29,10 @@ export const Profile = () => {
     event.preventDefault();
     saveUser(login, apiKey, dispatch);
   };
+
+  useEffect(()=>{
+    checkInfo(dispatch)
+  },[])
 
   return (
     <div>
