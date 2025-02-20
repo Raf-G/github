@@ -30,7 +30,9 @@ import { RepositoriesItem } from "./components/RepositoriesItem";
 
 export const Repositories = () => {
   const { activeTab } = useSelector((state) => state.globalReducer);
-  const { login, apiKey } = useSelector((state) => state.profileReducer);
+  const { login, apiKey, authorized } = useSelector(
+    (state) => state.profileReducer
+  );
   const {
     repositories,
     loading,
@@ -77,6 +79,7 @@ export const Repositories = () => {
       apiKey,
       updateRepoDescription,
       updateRepoVisibility,
+      repositories,
       dispatch
     );
 
@@ -86,6 +89,14 @@ export const Repositories = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
+
+  if (!authorized) {
+    return (
+      <Container>
+        <h1 className="text-center">Пожалуйста, авторизуется во вкладке "Профиль"</h1>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -172,8 +183,8 @@ export const Repositories = () => {
                   value={updateRepoVisibility}
                   onChange={(e) => handleUpdateRepoVisibility(e.target.value)}
                 >
-                  <option value="public">Public</option>
-                  <option value="private">Private</option>
+                  <option value="public">Публичный</option>
+                  <option value="private">Приватный</option>
                 </FormControl>
               </FormGroup>
             </Form>

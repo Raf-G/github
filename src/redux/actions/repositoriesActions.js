@@ -96,7 +96,11 @@ export const getRepositories = async (apiKey, dispatch) => {
     });
 
     if (!response.ok) {
-      toast.error(`Ошибка: ${response.status}`);
+      if (response.status === 401) {
+        toast.error("Необходимо авторизироться");
+      } else {
+        toast.error(`Ошибка: ${response.status}`);
+      }
 
       return;
     }
@@ -141,6 +145,7 @@ export const postCreateSubmit = async (
 
     getRepositories(apiKey, dispatch);
     dispatch(changeShowCreateModal());
+
     toast.success(`Репозиторий ${newRepoName} создан`);
   } catch (error) {
     toast.error(error.message);
@@ -160,6 +165,7 @@ export const updateSubmit = async (
   apiKey,
   updateRepoDescription,
   updateRepoVisibility,
+  repositories,
   dispatch
 ) => {
   if (!selectedRepo) return;
@@ -186,15 +192,31 @@ export const updateSubmit = async (
       return;
     }
 
-    getRepositories(apiKey, dispatch);
+    const newRepositories = repositories.filter((item) => {
+      if (item.name === selectedRepo.name) {
+        item.description = updateRepoDescription;
+        item.visibility = updateRepoVisibility === "private";
+      }
+
+      return item;
+    });
+
+    dispatch(setRepositories(newRepositories));
     dispatch(changeShowUpdateModal(false));
+
     toast.success(`Репозиторий ${selectedRepo.name} обновлен`);
   } catch (error) {
     toast.error("При обновлении произошла ошибка");
   }
 };
 
-export const deleteRepo = async (repoName, login, apiKey, dispatch) => {
+export const deleteRepo = async (
+  repoName,
+  login,
+  apiKey,
+  repositories,
+  dispatch
+) => {
   try {
     const response = await fetch(`${API_REPOS_URL}/${login}/${repoName}`, {
       method: "DELETE",
@@ -211,7 +233,12 @@ export const deleteRepo = async (repoName, login, apiKey, dispatch) => {
       return;
     }
 
-    getRepositories(apiKey, dispatch);
+    const newRepositories = repositories.filter(
+      (item) => item.name !== repoName
+    );
+
+    dispatch(setRepositories(newRepositories));
+
     toast.success(`Репозиторий ${repoName} удален`);
   } catch (error) {
     toast.error("При удалении произошла ошибка");
