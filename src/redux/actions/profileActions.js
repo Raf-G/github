@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { API_USERS_URL } from "../../shared/api/api";
 
 export const setLogin = (login) => ({
   type: "SET_LOGIN",
@@ -30,7 +31,7 @@ export const changeAuthorized = (authorized) => {
 export const saveUser = async (login, apiKey, dispatch) => {
   if (login && apiKey) {
     try {
-      const response = await fetch(`https://api.github.com/users/${login}`, {
+      const response = await fetch(`${API_USERS_URL}/${login}`, {
         headers: {
           Authorization: `token ${apiKey}`,
         },
@@ -38,24 +39,21 @@ export const saveUser = async (login, apiKey, dispatch) => {
 
       if (!response.ok) {
         if (response.status === 401) {
-          toast.error("Неверный API Key!");
+          toast.error("Неверный API Key");
         } else if (response.status === 404) {
-          toast.error("Пользователь не найден!");
+          toast.error("Пользователь не найден");
         } else {
           toast.error(`Ошибка: ${response.status}`);
         }
-        dispatch(changeAuthorized(false));
 
+        dispatch(changeAuthorized(false));
         return;
       }
 
-      localStorage.setItem('login', login);
-      localStorage.setItem('apiKey', apiKey);
-
-      toast.success("Данный сохранены!");
+      toast.success("Данный сохранены");
       dispatch(changeAuthorized(true));
     } catch (err) {
-      toast.error(`Произошла ошибка!`);
+      toast.error(`Произошла ошибка при авторизации`);
       dispatch(changeAuthorized(false));
     }
   }

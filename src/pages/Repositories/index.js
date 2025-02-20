@@ -134,8 +134,8 @@ export const Repositories = () => {
                 value={newRepoVisibility}
                 onChange={(e) => handleNewRepoVisibility(e.target.value)}
               >
-                <option value="public">Public</option>
-                <option value="private">Private</option>
+                <option value="public">Публичный</option>
+                <option value="private">Приватный</option>
               </FormControl>
             </FormGroup>
           </Form>
