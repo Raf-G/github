@@ -10,6 +10,11 @@ export const setApiKey = (key) => ({
   payload: key,
 });
 
+export const setAuthorized = (authorized) => ({
+  type: "SET_AUTHORIZED",
+  payload: authorized,
+});
+
 export const changeLogin = (login) => {
   return async (dispatch) => dispatch(setLogin(login));
 };
@@ -18,7 +23,11 @@ export const changeApiKey = (apiKey) => {
   return async (dispatch) => dispatch(setApiKey(apiKey));
 };
 
-export const saveUser = async (login, apiKey) => {
+export const changeAuthorized = (authorized) => {
+  return async (dispatch) => dispatch(setAuthorized(authorized));
+};
+
+export const saveUser = async (login, apiKey, dispatch) => {
   if (login && apiKey) {
     try {
       const response = await fetch(`https://api.github.com/users/${login}`, {
@@ -35,13 +44,18 @@ export const saveUser = async (login, apiKey) => {
         } else {
           toast.error(`Ошибка: ${response.status}`);
         }
+        dispatch(changeAuthorized(false));
+
+        return;
       }
 
       const data = await response.json();
       console.log(data);
-      toast.success('Данный сохранены!')
+      toast.success("Данный сохранены!");
+      dispatch(changeAuthorized(true));
     } catch (err) {
       toast.error(`Произошла ошибка!`);
+      dispatch(changeAuthorized(false));
     }
   }
 };

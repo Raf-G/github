@@ -16,16 +16,17 @@ import {
 import { TooltipApiKey } from "./components/TooltipApiKey";
 
 export const Profile = () => {
-  const { login, apiKey } = useSelector((state) => state.profileReducer);
+  const { login, apiKey, authorized } = useSelector(
+    (state) => state.profileReducer
+  );
   const dispatch = useDispatch();
 
   const setLogin = (value) => dispatch(changeLogin(value));
-
   const setApiKey = (value) => dispatch(changeApiKey(value));
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    saveUser(login, apiKey);
+    saveUser(login, apiKey, dispatch);
   };
 
   return (
@@ -56,9 +57,14 @@ export const Profile = () => {
             Никому не сообщайте свой API Key!
           </FormText>
         </FormGroup>
-        <Button variant="primary" type="submit">
-          Сохранить
-        </Button>
+        <div className="d-flex align-items-center">
+          <Button variant="primary" type="submit">
+            Сохранить
+          </Button>
+          <p className="mb-0 p-2">
+            {authorized ? "Вы авторизованы" : "Пожалуйста, авторизуйтесь"}
+          </p>
+        </div>
       </Form>
     </div>
   );
