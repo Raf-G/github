@@ -21,8 +21,8 @@ export const Profile = () => {
   );
   const dispatch = useDispatch();
 
-  const setLogin = (value) => dispatch(changeLogin(value));
-  const setApiKey = (value) => dispatch(changeApiKey(value));
+  const handleLogin = (value) => dispatch(changeLogin(value));
+  const handleApiKey = (value) => dispatch(changeApiKey(value));
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -39,7 +39,7 @@ export const Profile = () => {
             type="text"
             placeholder="Введите логин"
             value={login}
-            onChange={(e) => setLogin(e.target.value)}
+            onChange={(e) => handleLogin(e.target.value)}
           />
         </FormGroup>
         <FormGroup className="mb-3" controlId="formApiKey">
@@ -51,7 +51,7 @@ export const Profile = () => {
             type="password"
             placeholder="Введите GitHub API Key"
             value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
+            onChange={(e) => handleApiKey(e.target.value)}
           />
           <FormText className="text-muted">
             Никому не сообщайте свой API Key!
