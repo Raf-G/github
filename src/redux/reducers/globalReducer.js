@@ -1,11 +1,11 @@
 const initialState = {
-  data: [],
+  activeTab: "profile",
 };
 
 const globalReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SET_DATA":
-      return { ...state, data: action.payload };
+    case "SET_ACTIVE_TAB":
+      return { ...state, activeTab: action.payload };
     default:
       return state;
   }
