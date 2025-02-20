@@ -49,8 +49,9 @@ export const saveUser = async (login, apiKey, dispatch) => {
         return;
       }
 
-      const data = await response.json();
-      console.log(data);
+      localStorage.setItem('login', login);
+      localStorage.setItem('apiKey', apiKey);
+
       toast.success("Данный сохранены!");
       dispatch(changeAuthorized(true));
     } catch (err) {

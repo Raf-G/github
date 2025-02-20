@@ -1,6 +1,5 @@
 import { toast } from "react-toastify";
-
-const API_URL = `https://api.github.com/user/repos`;
+import { API_REPOS_URL, API_USER_REPOS_URL } from "../../shared/api/api";
 
 export const setRepositories = (repositories) => ({
   type: "SET_REPOSITORIES",
@@ -90,7 +89,7 @@ export const getRepositories = async (apiKey, dispatch) => {
   dispatch(setLoading(true));
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(API_USER_REPOS_URL, {
       headers: {
         Authorization: `token ${apiKey}`,
       },
@@ -105,6 +104,7 @@ export const getRepositories = async (apiKey, dispatch) => {
     const data = await response.json();
     dispatch(setRepositories(data));
   } catch (error) {
+    toast.error("Произошла ошибка");
   } finally {
     dispatch(setLoading(false));
   }
@@ -118,7 +118,7 @@ export const postCreateSubmit = async (
   dispatch
 ) => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(API_USER_REPOS_URL, {
       method: "POST",
       headers: {
         Authorization: `token ${apiKey}`,
@@ -131,14 +131,17 @@ export const postCreateSubmit = async (
       }),
     });
 
+    const responseBody = await response.json();
+
     if (!response.ok) {
-      toast.error(`Ошибка: ${response.status}`);
+      toast.error(`Ошибка: ${responseBody.message}`);
 
       return;
     }
 
     getRepositories(apiKey, dispatch);
     dispatch(changeShowCreateModal());
+    toast.success(`Репозиторий ${newRepoName} создан`);
   } catch (error) {
     toast.error(error.message);
   }
@@ -149,4 +152,68 @@ export const updateShow = (repo, dispatch) => {
   dispatch(changeUpdateRepoDescription(repo.description));
   dispatch(changeUpdateRepoVisibility(repo.private ? "private" : "public"));
   dispatch(changeShowUpdateModal(true));
+};
+
+export const updateSubmit = async (
+  selectedRepo,
+  login,
+  apiKey,
+  updateRepoDescription,
+  updateRepoVisibility,
+  dispatch
+) => {
+  if (!selectedRepo) return;
+
+  try {
+    const response = await fetch(
+      `${API_REPOS_URL}/${login}/${selectedRepo.name}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `token ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          description: updateRepoDescription,
+          private: updateRepoVisibility === "private",
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      toast.error(`Ошибка: ${response.status}`);
+
+      return;
+    }
+
+    getRepositories(apiKey, dispatch);
+    dispatch(changeShowUpdateModal(false));
+    toast.success(`Репозиторий ${selectedRepo.name} обновлен`);
+  } catch (error) {
+    toast.error("При обновлении произошла ошибка");
+  }
+};
+
+export const deleteRepo = async (repoName, login, apiKey, dispatch) => {
+  try {
+    const response = await fetch(`${API_REPOS_URL}/${login}/${repoName}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `token ${apiKey}`,
+      },
+    });
+
+    if (!response.ok && response.status !== 204) {
+      const responseBody = await response.json();
+
+      toast.error(`Ошибка: ${responseBody.message}`);
+
+      return;
+    }
+
+    getRepositories(apiKey, dispatch);
+    toast.success(`Репозиторий ${repoName} удален`);
+  } catch (error) {
+    toast.error("При удалении произошла ошибка");
+  }
 };
